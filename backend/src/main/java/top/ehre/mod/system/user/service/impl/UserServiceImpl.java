@@ -1,5 +1,6 @@
 package top.ehre.mod.system.user.service.impl;
 
+import org.springframework.beans.factory.annotation.Value;
 import top.ehre.mod.exception.BusinessException;
 import top.ehre.mod.security.authentication.UserInfo;
 import top.ehre.mod.system.menu.domain.entity.MenuEntity;
@@ -57,6 +58,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     @Resource
     @Lazy
     private PasswordEncoder passwordEncoder;
+
+    // 注入url
+    @Value("${push.url}")
+    private String pushUrl;
 
     private void setRoleVOByUserRoleRelation(UserVO userVO){
         String userId = userVO.getUserId();
@@ -211,7 +216,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
         UserEntity user = new UserEntity();
         BeanUtils.copyProperties(registerDTO, user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setAvatar("http://127.0.0.1:9091/default/avatar.png");
+        user.setAvatar(pushUrl + "/default/avatar.png");
         boolean saved = save(user);
         return get(user.getUserId());
     }

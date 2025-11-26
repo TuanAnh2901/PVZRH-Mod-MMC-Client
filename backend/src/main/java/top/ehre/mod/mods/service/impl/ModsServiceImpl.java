@@ -67,7 +67,7 @@ public class ModsServiceImpl extends ServiceImpl<ModsMapper, ModsEntity> impleme
         List<ModsVO> listVO = list.stream().map(mods -> {
             ModsVO modsVO = new ModsVO();
             BeanUtils.copyProperties(mods, modsVO);
-            modsVO.setAuthorName(userService.get(mods.getAuthorId()).getUsername());
+            modsVO.setAuthorName(userService.get(mods.getAuthorId()).getNickname());
             return modsVO;
         }).toList();
         return listVO;
