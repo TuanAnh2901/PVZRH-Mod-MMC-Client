@@ -1,7 +1,3 @@
-这是一个为你定制的 `README.md` 文件。我已经为你设计了专业的排版，包含了技术栈徽章、功能介绍、开发指南等标准模块。你可以直接复制使用，或者根据实际的项目文件夹结构稍作调整。
-
----
-
 # 🌿 植物大战僵尸融合版模组管理器 (PVZ Fusion Mod Manager)
 
 [![Tauri](https://img.shields.io/badge/Tauri-v2-FEC00F?logo=tauri&logoColor=black)](https://tauri.app/)
