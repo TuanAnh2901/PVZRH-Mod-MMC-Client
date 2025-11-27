@@ -7,12 +7,14 @@
       </div>
       <div class="header-right">
         <t-button theme="primary" variant="outline" @click="refreshData" :loading="loading">
-          <template #icon><RefreshIcon /></template>
+          <template #icon>
+            <RefreshIcon />
+          </template>
           刷新数据
         </t-button>
       </div>
     </div>
-    
+
     <div class="stat-grid">
       <!-- 已安装 -->
       <div class="stat-card">
@@ -55,12 +57,8 @@
             <span>启用率</span>
             <span class="chart-value">{{ enableRate }}%</span>
           </div>
-          <t-progress 
-            theme="plump" 
-            :percentage="enableRate" 
-            :color="{ from: '#0052D9', to: '#00A870' }" 
-            track-color="#E7E7E7"
-          />
+          <t-progress theme="plump" :percentage="enableRate" :color="{ from: '#0052D9', to: '#00A870' }"
+            track-color="#E7E7E7" />
           <p class="chart-desc">
             本地检测到 {{ stats.installed }} 个文件，其中 {{ stats.enabled }} 个已启用。
           </p>
@@ -168,27 +166,146 @@ onMounted(() => {
 
 <style scoped>
 /* 保持原有样式不变 */
-.dashboard-container { padding-bottom: 20px; }
-.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-.page-header h1 { font-size: 24px; font-weight: 700; color: #1d2129; margin: 0 0 4px 0; }
-.page-header p { font-size: 14px; color: #86909c; margin: 0; }
-.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
-.stat-card { background: #ffffff; border-radius: 8px; padding: 24px; display: flex; align-items: center; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); transition: all 0.3s ease; }
-.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-.stat-icon-wrapper { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 16px; color: #fff; }
-.blue-bg { background: linear-gradient(135deg, #2b5aed 0%, #3d7fff 100%); }
-.green-bg { background: linear-gradient(135deg, #00a870 0%, #4cd2a2 100%); }
-.purple-bg { background: linear-gradient(135deg, #7b61ff 0%, #a48eff 100%); }
-.stat-info .stat-label { font-size: 14px; color: #86909c; margin-bottom: 4px; }
-.stat-info .stat-value { font-size: 28px; font-weight: 700; color: #1d2129; line-height: 1.2; }
-.content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.dashboard-card { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); border-radius: 8px; }
-.status-chart-container { padding: 10px 0; }
-.chart-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 500; color: #4e5969; }
-.chart-desc { margin-top: 16px; font-size: 13px; color: #86909c; }
-.system-info { display: flex; flex-direction: column; gap: 12px; }
-.info-item { display: flex; justify-content: space-between; font-size: 13px; }
-.info-item .label { color: #86909c; white-space: nowrap; }
-.info-item .value { color: #1d2129; font-weight: 500; }
-.text-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px; cursor: pointer; color: #3070f0 !important;text-decoration: underline;}
+.dashboard-container {
+  padding-bottom: 20px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1d2129;
+  margin: 0 0 4px 0;
+}
+
+.page-header p {
+  font-size: 14px;
+  color: #86909c;
+  margin: 0;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+  color: #fff;
+}
+
+.blue-bg {
+  background: linear-gradient(135deg, #2b5aed 0%, #3d7fff 100%);
+}
+
+.green-bg {
+  background: linear-gradient(135deg, #00a870 0%, #4cd2a2 100%);
+}
+
+.purple-bg {
+  background: linear-gradient(135deg, #7b61ff 0%, #a48eff 100%);
+}
+
+.stat-info .stat-label {
+  font-size: 14px;
+  color: #86909c;
+  margin-bottom: 4px;
+}
+
+.stat-info .stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1d2129;
+  line-height: 1.2;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dashboard-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.status-chart-container {
+  padding: 10px 0;
+}
+
+.chart-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #4e5969;
+}
+
+.chart-desc {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #86909c;
+}
+
+.system-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.info-item .label {
+  color: #86909c;
+  white-space: nowrap;
+}
+
+.info-item .value {
+  color: #1d2129;
+  font-weight: 500;
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+  cursor: pointer;
+  color: #3070f0 !important;
+  text-decoration: underline;
+}
 </style>

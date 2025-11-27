@@ -3,7 +3,7 @@
     <div class="page-header">
       <h1>详情页</h1>
     </div>
-    
+
     <div class="detail-content">
       <div class="card">
         <div class="card-content">

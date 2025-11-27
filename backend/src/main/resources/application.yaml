@@ -16,8 +16,8 @@ spring:
       database: 2
 
 file:
-  localPath: /home/mod/file
+  localPath: D:\home\mod\file\
   network: http://127.0.0.1:9091/static
 
 push:
-  url: https://mod.ehre.top/api
+  url: http://127.0.0.1:9091

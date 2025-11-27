@@ -3,7 +3,7 @@
     <div class="page-header">
       <h1>设置</h1>
     </div>
-    
+
     <div class="setting-content">
       <!-- 1. 系统设置卡片 -->
       <t-card title="系统设置" :bordered="false" class="setting-card">
@@ -11,12 +11,7 @@
           <div class="setting-item">
             <span class="label">游戏路径：</span>
             <t-input-group>
-              <t-input 
-                v-model="gamePath" 
-                placeholder="请选择游戏路径" 
-                @change="onInputChange" 
-                style="width: 350px;"
-              />
+              <t-input v-model="gamePath" placeholder="请选择游戏路径" @change="onInputChange" style="width: 350px;" />
               <t-button theme="primary" @click="selectGamePath">浏览</t-button>
             </t-input-group>
           </div>
@@ -46,16 +41,18 @@
             <t-list-item>
               <t-list-item-meta title="开发者" description="LibraHp_0928" />
               <template #action>
-                <t-button theme="primary" variant="outline" size="small" @click="openLink('https://space.bilibili.com/1117414477')">
+                <t-button theme="primary" variant="outline" size="small"
+                  @click="openLink('https://space.bilibili.com/1117414477')">
                   访问主页
                 </t-button>
               </template>
             </t-list-item>
-            
+
             <t-list-item>
               <t-list-item-meta title="开源地址" description="GitHub Repository" />
               <template #action>
-                <t-button theme="primary" variant="outline" size="small" @click="openLink('https://github.com/Gaoshu705/PVZRH-Mod-MMC')">
+                <t-button theme="primary" variant="outline" size="small"
+                  @click="openLink('https://github.com/Gaoshu705/PVZRH-Mod-MMC')">
                   去 Star
                 </t-button>
               </template>
@@ -188,7 +185,7 @@ onMounted(async () => {
   display: grid;
   gap: 20px;
   /* 限制最大宽度，防止在大屏上太宽难看 */
-  max-width: 800px; 
+  max-width: 800px;
 }
 
 .setting-card {
@@ -210,7 +207,8 @@ onMounted(async () => {
 
 .path-hint {
   margin-top: 8px;
-  margin-left: 96px; /* label width + gap */
+  margin-left: 96px;
+  /* label width + gap */
   font-size: 12px;
   color: #86909c;
   word-break: break-all;

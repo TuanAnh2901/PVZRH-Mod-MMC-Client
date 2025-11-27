@@ -3,7 +3,7 @@
     <div class="page-header">
       <h1>结果页</h1>
     </div>
-    
+
     <div class="result-content">
       <div class="card">
         <div class="card-content">

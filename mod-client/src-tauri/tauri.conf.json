@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "mod-client",
+  "productName": "模组管理器",
   "version": "0.1.0",
   "identifier": "top.ehre.mod-client",
   "build": {
@@ -15,7 +15,8 @@
         "title": "模组管理工具 by 高数带我飞",
         "width": 800,
         "height": 600,
-        "decorations": false
+        "decorations": false,
+        "center": true
       }
     ],
     "security": {
@@ -31,6 +32,15 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "copyright": "Copyright © 2025 高数带我飞",
+    "windows": {
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "headerImage": "installer/header.bmp",
+        "sidebarImage": "installer/sidebar.bmp",
+        "languages": ["SimpChinese"]
+      }
+    }
   }
 }

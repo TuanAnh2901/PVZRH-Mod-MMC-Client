@@ -7,7 +7,9 @@
       </div>
       <div class="header-actions">
         <t-button theme="primary" variant="outline" @click="fetchMods" :loading="loading">
-          <template #icon><RefreshIcon /></template>
+          <template #icon>
+            <RefreshIcon />
+          </template>
           刷新列表
         </t-button>
       </div>
@@ -18,21 +20,16 @@
     </div>
 
     <div v-else class="mod-grid">
-      <t-card 
-        v-for="mod in modList" 
-        :key="mod.id" 
-        class="mod-card"
-        :bordered="false"
-        hover-shadow
-      >
+      <t-card v-for="mod in modList" :key="mod.id" class="mod-card" :bordered="false" hover-shadow>
         <div class="mod-card-header">
           <div class="mod-title" :title="mod.modName">{{ mod.modName }}</div>
           <t-space size="small">
-            <t-tag theme="warning" variant="light" size="small" v-if="mod.frameworkName">{{ mod.frameworkName === '1' ? 'BepInEx' : 'MelonLoader' }}</t-tag>
+            <t-tag theme="warning" variant="light" size="small" v-if="mod.frameworkName">{{ mod.frameworkName === '1' ?
+              'BepInEx' : 'MelonLoader' }}</t-tag>
             <t-tag theme="primary" variant="light" size="small">{{ mod.version }}</t-tag>
           </t-space>
         </div>
-        
+
         <div class="mod-card-body">
           <p class="description" :title="mod.modDescription">
             {{ mod.modDescription || '暂无描述' }}
@@ -56,7 +53,7 @@
         <template #footer>
           <!-- 下载区域 -->
           <div class="mod-card-actions">
-            
+
             <!-- 如果当前模组正在下载，显示进度条和取消按钮 -->
             <div v-if="downloadingId === mod.id" class="download-progress-area">
               <div class="progress-info">
@@ -64,45 +61,28 @@
                 <!-- 仅在下载阶段显示百分比 -->
                 <span v-if="installStatus === '下载中'" class="percentage">{{ downloadProgress }}%</span>
               </div>
-              <t-progress 
-                theme="plump" 
-                :percentage="downloadProgress" 
-                :status="downloadProgress === 100 ? 'success' : 'active'"
-                size="small"
-              />
-              <t-button 
-                theme="danger" 
-                variant="text" 
-                size="small" 
-                block 
-                style="margin-top: 8px"
-                @click="cancelDownload"
-              >
+              <t-progress theme="plump" :percentage="downloadProgress"
+                :status="downloadProgress === 100 ? 'success' : 'active'" size="small" />
+              <t-button theme="danger" variant="text" size="small" block style="margin-top: 8px"
+                @click="cancelDownload">
                 取消安装
               </t-button>
             </div>
 
             <!-- 正常状态显示操作按钮 -->
             <template v-else>
-              <t-button 
-                theme="primary" 
-                block 
-                :disabled="downloadingId !== ''"
-                @click="handleDownload(mod)"
-              >
-                <template #icon><DownloadIcon /></template>
+              <t-button theme="primary" block :disabled="downloadingId !== ''" @click="handleDownload(mod)">
+                <template #icon>
+                  <DownloadIcon />
+                </template>
                 下载并安装
               </t-button>
-              
-              <t-button 
-                v-if="mod.downloadCloudUrl" 
-                theme="default" 
-                variant="dashed" 
-                block 
-                :disabled="downloadingId !== ''"
-                @click="handleCloudLink(mod)"
-              >
-                <template #icon><CloudDownloadIcon /></template>
+
+              <t-button v-if="mod.downloadCloudUrl" theme="default" variant="dashed" block
+                :disabled="downloadingId !== ''" @click="handleCloudLink(mod)">
+                <template #icon>
+                  <CloudDownloadIcon />
+                </template>
                 网盘链接
               </t-button>
             </template>
@@ -111,7 +91,7 @@
         </template>
       </t-card>
     </div>
-    
+
     <div v-if="!loading && modList.length === 0" class="empty-state">
       <t-empty description="暂无在线模组" />
     </div>
@@ -137,8 +117,8 @@ interface ModItem {
   authorName: string;
   modDescription: string;
   supportedVersions: string;
-  downloadDirectUrl: string; 
-  downloadCloudUrl: string; 
+  downloadDirectUrl: string;
+  downloadCloudUrl: string;
   version: string;
   updatedAt: string;
   frameworkName: string;
@@ -170,7 +150,7 @@ const fetchMods = async () => {
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const res: ApiResponse = await response.json();
-    
+
     if (res.code === 0 && res.data) {
       modList.value = res.data;
     } else {
@@ -213,11 +193,11 @@ const handleDownload = async (mod: ModItem) => {
   // 如果 mod.frameworkName != fcode，说明不匹配。
   // 假设 1=BepInEx, 2=MelonLoader。当前环境是 BepInEx(1)，但Mod是 MelonLoader(2)，则报错。
   if (mod.frameworkName !== fcode) {
-     // 优化提示文案
-     const currentEnv = modFramework;
-     const targetEnv = mod.frameworkName === '1' ? 'BepInEx' : 'MelonLoader';
-     MessagePlugin.warning(`环境不匹配：当前是 ${currentEnv}，该模组需要 ${targetEnv}`);
-     return;
+    // 优化提示文案
+    const currentEnv = modFramework;
+    const targetEnv = mod.frameworkName === '1' ? 'BepInEx' : 'MelonLoader';
+    MessagePlugin.warning(`环境不匹配：当前是 ${currentEnv}，该模组需要 ${targetEnv}`);
+    return;
   }
 
   // 2. 初始化下载状态
@@ -246,7 +226,7 @@ const handleDownload = async (mod: ModItem) => {
 
     // 5. 读取流并计算进度
     if (!response.body) throw new Error('无法读取响应流');
-    
+
     const reader = response.body.getReader();
     const chunks: Uint8Array[] = [];
     let receivedLength = 0;
@@ -310,7 +290,7 @@ const handleDownload = async (mod: ModItem) => {
   } finally {
     // 只有在非取消状态下（或者出错时）重置，避免UI闪烁
     if (!abortController.value?.signal.aborted) {
-        downloadingId.value = '';
+      downloadingId.value = '';
     }
     abortController.value = null;
   }
@@ -334,27 +314,129 @@ onUnmounted(() => {
 
 <style scoped>
 /* 保持原有布局样式 */
-.mod-store-container { height: 100%; display: flex; flex-direction: column; }
-.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-.page-header h1 { font-size: 24px; font-weight: 600; color: #1d2129; margin: 0 0 4px 0; }
-.page-header p { font-size: 14px; color: #86909c; margin: 0; }
-.mod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding-bottom: 20px; }
-.mod-card { border-radius: 8px; transition: transform 0.2s; display: flex; flex-direction: column; }
-.mod-card:hover { transform: translateY(-2px); }
-.mod-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.mod-title { font-size: 16px; font-weight: 600; color: #1d2129; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
-.mod-card-body { flex: 1; }
-.description { color: #4e5969; font-size: 14px; line-height: 1.5; height: 42px; margin-bottom: 16px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
-.meta-info { display: flex; gap: 16px; font-size: 12px; color: #86909c; margin-bottom: 8px; }
-.meta-item { display: flex; align-items: center; gap: 4px; }
-.support-info { font-size: 12px; background: #f7f8fa; padding: 4px 8px; border-radius: 4px; display: inline-block; color: #4e5969; }
-.support-info .label { color: #86909c; }
-.mod-card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 8px; }
-.loading-state, .empty-state { display: flex; justify-content: center; align-items: center; padding: 60px 0; }
+.mod-store-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1d2129;
+  margin: 0 0 4px 0;
+}
+
+.page-header p {
+  font-size: 14px;
+  color: #86909c;
+  margin: 0;
+}
+
+.mod-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.mod-card {
+  border-radius: 8px;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.mod-card:hover {
+  transform: translateY(-2px);
+}
+
+.mod-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.mod-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1d2129;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.mod-card-body {
+  flex: 1;
+}
+
+.description {
+  color: #4e5969;
+  font-size: 14px;
+  line-height: 1.5;
+  height: 42px;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.meta-info {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #86909c;
+  margin-bottom: 8px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.support-info {
+  font-size: 12px;
+  background: #f7f8fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  color: #4e5969;
+}
+
+.support-info .label {
+  color: #86909c;
+}
+
+.mod-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.loading-state,
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 0;
+}
 
 /* 新增：下载进度区域样式 */
 .download-progress-area {
-  grid-column: 1 / -1; /* 占满整行 */
+  grid-column: 1 / -1;
+  /* 占满整行 */
   background: #f7f8fa;
   padding: 12px;
   border-radius: 6px;
