@@ -19,6 +19,9 @@
       <el-form-item label="Mod介绍" prop="modDescription" >
         <el-input v-model="form.modDescription" placeholder="Mod介绍"/>
       </el-form-item>
+      <el-form-item label="视频Url" prop="videoUrl" >
+        <el-input v-model="form.videoUrl" placeholder="视频Url"/>
+      </el-form-item>
       <el-form-item label="支持游戏" prop="gameName" >
         <el-input v-model="form.gameName" placeholder="支持游戏"/>
       </el-form-item>
@@ -53,6 +56,9 @@
       </el-form-item>
       <el-form-item label="是否推荐" prop="isFeatured"  v-if="false">
         <el-switch v-model="form.isFeatured" :active-value="true"/>
+      </el-form-item>
+      <el-form-item label="是否显示直链" prop="showDirectUrl">
+        <el-switch v-model="form.showDirectUrl" :active-value="true"/>
       </el-form-item>
       <el-form-item label="是否发布" prop="isVisible">
         <el-switch v-model="form.isVisible" :active-value="true"/>

@@ -233,7 +233,9 @@ import {hasPerm} from "@/utils/permission.js";
   }
 
   onMounted(() => {
-    fetchStatsData()
+    if (hasPerm('system:role:get')) {
+      fetchStatsData()
+    }
   })
 </script>
 

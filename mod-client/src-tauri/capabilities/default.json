@@ -54,6 +54,14 @@
       ]
     },
     {
+      "identifier": "fs:read-all",
+      "allow": [
+        {
+          "path": "**"
+        }
+      ]
+    },
+    {
       "identifier": "opener:allow-open-path",
       "allow": [
         {
@@ -68,7 +76,7 @@
       "identifier": "http:default",
       "allow": [
         {
-          "url": "https://**"
+          "url": "**://**"
         }
       ]
     }

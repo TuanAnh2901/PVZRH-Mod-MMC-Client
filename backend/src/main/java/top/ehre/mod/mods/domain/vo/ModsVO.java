@@ -37,6 +37,9 @@ public class ModsVO {
     @ApiModelProperty("Mod介绍")
     private String modDescription;
 
+    @ApiModelProperty("视频地址")
+    private String videoUrl;
+
     @ApiModelProperty("支持游戏")
     private String gameName;
 
@@ -45,6 +48,9 @@ public class ModsVO {
 
     @ApiModelProperty("Mod框架")
     private String frameworkName;
+
+    @ApiModelProperty("是否显示直链")
+    private Boolean showDirectUrl;
 
     @ApiModelProperty("直链下载地址")
     private String downloadDirectUrl;

@@ -40,6 +40,9 @@ public class ModsEntity {
     @ApiModelProperty("Mod介绍")
     private String modDescription;
 
+    @ApiModelProperty("视频地址")
+    private String videoUrl;
+
     @ApiModelProperty("支持游戏")
     private String gameName;
 
@@ -75,6 +78,9 @@ public class ModsEntity {
 
     @ApiModelProperty("是否可见")
     private Boolean isVisible;
+
+    @ApiModelProperty("是否展示直链")
+    private Boolean showDirectUrl;
 
     @ApiModelProperty("创建时间")
     private LocalDateTime createdAt;

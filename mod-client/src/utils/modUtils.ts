@@ -1,6 +1,8 @@
 import { load } from '@tauri-apps/plugin-store';
 import { readDir,exists } from '@tauri-apps/plugin-fs';
-import { join } from '@tauri-apps/api/path';
+import { join, dirname } from '@tauri-apps/api/path';
+import JSZip from 'jszip';
+import { writeFile, mkdir } from '@tauri-apps/plugin-fs';
 
 export interface LocalModInfo {
   name: string;      // 显示名称
@@ -126,5 +128,28 @@ export const scanLocalMods = async (): Promise<LocalModInfo[]> => {
   } catch (err) {
     console.error('扫描插件目录失败:', err);
     return [];
+  }
+};
+
+/**
+ * 将ZIP文件解压到游戏目录
+ * @param zipData ZIP文件的数据
+ * @param gamePath 游戏目录
+ */
+export const extractZipToGameDir = async (zipData: Uint8Array, gamePath: string) => {
+  const zip = new JSZip();
+  const loadedZip = await zip.loadAsync(zipData.buffer);
+  
+  for (const [relativePath, fileEntry] of Object.entries(loadedZip.files)) {
+    const targetPath = await join(gamePath, relativePath);
+
+    if (fileEntry.dir) {
+      await mkdir(targetPath, { recursive: true });
+    } else {
+      const parentDir = await dirname(targetPath);
+      await mkdir(parentDir, { recursive: true });
+      const content = await fileEntry.async('uint8array');
+      await writeFile(targetPath, content);
+    }
   }
 };
