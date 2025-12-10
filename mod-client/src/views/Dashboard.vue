@@ -6,12 +6,20 @@
         <p>欢迎回来，这里是您的 MOD 管理中心</p>
       </div>
       <div class="header-right">
+        <t-space>
+        <t-button theme="default" variant="outline" @click="checkForUpdates" :loading="updateLoading">
+          <template #icon>
+            <DownloadIcon />
+          </template>
+          检查更新
+        </t-button>
         <t-button theme="primary" variant="outline" @click="refreshData" :loading="loading">
           <template #icon>
             <RefreshIcon />
           </template>
           刷新数据
         </t-button>
+        </t-space>
       </div>
     </div>
 
@@ -86,15 +94,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { AppIcon, CheckCircleIcon, CloudIcon, RefreshIcon } from 'tdesign-icons-vue-next';
-import { MessagePlugin } from 'tdesign-vue-next';
+import { ref, computed, onMounted, h } from 'vue';
+import { AppIcon, CheckCircleIcon, CloudIcon, RefreshIcon, DownloadIcon } from 'tdesign-icons-vue-next';
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next';
 // 引入公共方法
 import { getGamePath, scanLocalMods, getModFramework } from '../utils/modUtils';
-import { openPath } from '@tauri-apps/plugin-opener';
+import { openPath, openUrl } from '@tauri-apps/plugin-opener';
 import { useRouter } from "vue-router";
 // 导入全局状态管理
 import { useModListStore } from '../stores/modStore';
+// 导入更新检查工具
+import { checkForUpdates as checkUpdatesApi, checkUpdatesOnStartup } from '../utils/updateChecker';
+// 导入Markdown渲染组件
+import MarkdownRenderer from '../components/MarkdownRenderer.vue';
 
 const router = useRouter();
 
@@ -102,6 +114,7 @@ const router = useRouter();
 const { modList, fetchModList } = useModListStore();
 
 const loading = ref(false);
+const updateLoading = ref(false);
 const gamePath = ref('');
 const lastUpdateTime = ref('');
 const modFramework = ref('');
@@ -169,7 +182,59 @@ const refreshData = async () => {
   MessagePlugin.success('数据已刷新');
 };
 
+// 检查更新
+const checkForUpdates = async () => {
+  updateLoading.value = true;
+  try {
+    const updateInfo = await checkUpdatesApi();
+    
+    if (updateInfo.hasUpdate) {
+      // 显示更新对话框
+      const confirmDialog = DialogPlugin.confirm({
+        header: '发现新版本',
+        placement: 'center',
+        body: () => {
+          return h('div', { style: 'padding: 10px 0;' }, [
+            h('p', `当前版本: ${updateInfo.currentVersion}`),
+            h('p', `最新版本: ${updateInfo.newVersion}`),
+            h('p', { style: 'margin-top: 10px;' }, '更新内容:'),
+            h('div', { style: 'margin-top: 5px; padding: 10px; background-color: #f9f9f9; border-radius: 4px; max-height: 200px; overflow-y: auto;' }, [
+              h(MarkdownRenderer, { content: updateInfo.updateContent || '' })
+            ]),
+            h('div', { style: 'margin-top: 15px; font-size: 12px; color: #999;' }, 
+              `发布时间: ${updateInfo.createdTime || '未知'}`
+            )
+          ]);
+        },
+        confirmBtn: '立即下载',
+        cancelBtn: '稍后提醒',
+        onConfirm: () => {
+          // 这里可以添加下载逻辑
+          if (updateInfo.updateUrl) {
+            // 如果有下载链接，打开下载页面
+            // window.open(updateInfo.updateUrl);
+            openUrl(updateInfo.updateUrl);
+          } else {
+            MessagePlugin.info('请联系开发者获取最新版本');
+          }
+          confirmDialog.destroy();
+        }
+      });
+    } else {
+      MessagePlugin.success(updateInfo.message || '已是最新版本');
+    }
+  } catch (error) {
+    console.error('检查更新失败:', error);
+    MessagePlugin.error('检查更新失败，请稍后重试');
+  } finally {
+    updateLoading.value = false;
+  }
+};
+
 onMounted(async () => {
+  // 启动时检查更新
+  checkUpdatesOnStartup();
+  
   try {
     // 首次加载，不强制刷新
     await fetchModList();

@@ -495,10 +495,6 @@ onUnmounted(() => {
   padding: 16px;
 }
 
-.mod-card-wrapper {
-  /* 不需要特殊样式，网格布局会自动处理 */
-}
-
 /* 响应式调整 */
 @media (max-width: 600px) {
   .mod-grid {

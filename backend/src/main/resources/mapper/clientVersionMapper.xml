@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.ehre.mod.clientVersion.mapper.ClientVersionMapper">
+
+    <select id="getPublishVersion" resultType="top.ehre.mod.clientVersion.domain.entity.ClientVersionEntity">
+        SELECT * FROM client_version WHERE is_released = 1 ORDER BY created_time DESC LIMIT 1
+    </select>
+</mapper>

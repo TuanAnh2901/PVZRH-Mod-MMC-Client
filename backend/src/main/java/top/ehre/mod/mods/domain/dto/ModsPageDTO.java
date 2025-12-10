@@ -19,4 +19,6 @@ import top.ehre.mod.util.PageParam;
 public class ModsPageDTO extends PageParam {
     @ApiModelProperty(value = "作者id")
     private String authorId;
+    @ApiModelProperty(value = "模组名称")
+    private String modName;
 }

@@ -35,8 +35,13 @@ public interface ModsMapper extends BaseMapper<ModsEntity> {
             return new SQL() {{
                 SELECT("id,mod_name,english_name,author_id,mod_description,video_url,game_name,supported_versions,framework_name,show_direct_url,download_direct_url,download_cloud_url,version,file_size,download_count,view_count,is_approved,is_featured,is_visible,created_at,updated_at");
                 FROM("mods");
-                if (pageDTO != null && pageDTO.getAuthorId() != null) {
-                    WHERE("author_id = #{pageDTO.authorId}");
+                if (pageDTO != null) {
+                    if (pageDTO.getAuthorId() != null && !pageDTO.getAuthorId().isBlank()){
+                        WHERE("author_id = #{pageDTO.authorId}");
+                    }
+                    if (pageDTO.getModName() != null && !pageDTO.getModName().isBlank()){
+                        WHERE("INSTR(mod_name, '" + pageDTO.getModName() + "')");
+                    }
                 }
             }}.toString();
         }

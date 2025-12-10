@@ -49,7 +49,13 @@
             </div>
           </div>
         </div>
-        <div class="search-query">
+       <div class="search-query">
+          <div class="query-item">
+            <div class="query-placeholder">Mod名称:</div>
+            <div class="query-input">
+              <el-input v-model="queryForm.modName" placeholder="Mod名称"/>
+            </div>
+          </div>
         </div>
         <div class="query-btn-group">
           <el-button type="primary" @click="onSearch">
