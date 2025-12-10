@@ -1,6 +1,7 @@
 import { load } from '@tauri-apps/plugin-store';
-import { readDir,exists } from '@tauri-apps/plugin-fs';
+import { readDir,exists, readTextFile } from '@tauri-apps/plugin-fs';
 import { join, dirname } from '@tauri-apps/api/path';
+import { appDataDir } from '@tauri-apps/api/path';
 import JSZip from 'jszip';
 import { writeFile, mkdir } from '@tauri-apps/plugin-fs';
 
@@ -10,6 +11,51 @@ export interface LocalModInfo {
   fullPath: string;  // 绝对路径
   isEnabled: boolean; // 是否启用
 }
+
+/**
+ * 自动识别游戏路径
+ * @returns 识别到的游戏路径，如果识别失败返回null
+ */
+export const autoDetectGamePath = async (): Promise<string | null> => {
+  try {
+    // 动态获取用户LocalLow路径
+    // 注意：Tauri没有直接获取LocalLow路径的API，我们需要从用户目录构建
+    const homeDir = await appDataDir();
+    // 从appDataDir路径获取用户目录，然后构建LocalLow路径
+    // appDataDir通常是 C:\Users\用户名\AppData\Roaming
+    const userDir = homeDir.split('\\AppData\\')[0];
+    const logPath = `${userDir}\\AppData\\LocalLow\\LanPiaoPiao\\PlantsVsZombiesRH\\Player.log`;
+    
+    try {
+      const logContent = await readTextFile(logPath);
+      
+      // 使用正则表达式匹配游戏目录
+      // 匹配模式：Loading player data from F:/Game/融合版整合包/PlantsVsZombiesRH_Data/data.unity3d
+      const regex = /Loading player data from (.+?)\/PlantsVsZombiesRH_Data\/data\.unity3d/;
+      const match = logContent.match(regex);
+      
+      if (match && match[1]) {
+        const detectedPath = match[1];
+        
+        // 保存识别到的路径
+        const store = await load('store.json');
+        await store.set('gamePath', detectedPath);
+        await store.save();
+        
+        return detectedPath;
+      } else {
+        console.error('未能从日志文件中识别游戏路径');
+        return null;
+      }
+    } catch (fileError) {
+      console.error('读取日志文件失败:', fileError);
+      return null;
+    }
+  } catch (error) {
+    console.error('自动识别游戏路径失败:', error);
+    return null;
+  }
+};
 
 /**
  * 获取配置中的游戏路径

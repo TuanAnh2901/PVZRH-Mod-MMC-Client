@@ -13,6 +13,7 @@
             <t-input-group>
               <t-input v-model="gamePath" placeholder="请选择游戏路径" @change="onInputChange" style="width: 350px;" />
               <t-button theme="primary" @click="selectGamePath">浏览</t-button>
+              <t-button theme="default" variant="outline" @click="autoDetectGamePathHandler">自动识别</t-button>
             </t-input-group>
           </div>
           <div class="path-hint" v-if="gamePath">
@@ -84,6 +85,7 @@ import { load } from '@tauri-apps/plugin-store';
 import { getVersion } from '@tauri-apps/api/app'; // 获取应用版本
 import { openUrl } from '@tauri-apps/plugin-opener'; // 打开外部链接
 import { MessagePlugin } from 'tdesign-vue-next';
+import { autoDetectGamePath } from '../utils/modUtils'; // 导入自动识别游戏路径函数
 // import { AppIcon } from 'tdesign-icons-vue-next'; // 引入图标组件
 
 const gamePath = ref('');
@@ -98,6 +100,24 @@ const saveSetting = async (key: string, value: string) => {
   } catch (err) {
     console.error('保存失败:', err);
     MessagePlugin.error('设置保存失败');
+  }
+};
+
+// 自动识别游戏路径
+const autoDetectGamePathHandler = async () => {
+  try {
+    const detectedPath = await autoDetectGamePath();
+    
+    if (detectedPath) {
+      gamePath.value = detectedPath;
+      await saveSetting('gamePath', detectedPath);
+      MessagePlugin.success(`已自动识别游戏路径：${detectedPath}`);
+    } else {
+      MessagePlugin.error('无法识别游戏路径，请确认游戏已运行过或手动选择路径');
+    }
+  } catch (error) {
+    console.error('自动识别游戏路径失败:', error);
+    MessagePlugin.error('自动识别失败，请手动选择游戏路径');
   }
 };
 
