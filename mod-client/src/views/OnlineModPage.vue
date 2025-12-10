@@ -78,7 +78,10 @@
               </div>
               <div class="mod-tags">
                 <t-tag v-if="mod.isFeatured" theme="danger" variant="light" size="small" class="featured-tag">
-                  推荐
+                  <template #icon>
+                    <PumpkinIcon />
+                  </template>
+                  置顶
                 </t-tag>
                 <t-tag :theme="mod.frameworkName === '1' ? 'primary' : 'warning'" variant="light" size="small"
                   v-if="mod.frameworkName">
@@ -175,7 +178,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
-import { RefreshIcon, DownloadIcon, CloudDownloadIcon, UserIcon, TimeIcon, FileImportIcon, SearchIcon } from 'tdesign-icons-vue-next';
+import { RefreshIcon, DownloadIcon, CloudDownloadIcon, UserIcon, TimeIcon, FileImportIcon, SearchIcon,PumpkinIcon } from 'tdesign-icons-vue-next';
 import { openUrl } from '@tauri-apps/plugin-opener';
 import { load } from '@tauri-apps/plugin-store';
 import { readFile } from '@tauri-apps/plugin-fs';
@@ -452,13 +455,36 @@ onUnmounted(() => {
   flex: 1;
   overflow-y: auto;
   padding: 4px 4px 20px 4px;
-  /* 隐藏滚动条但保留功能 */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  /* 显示滚动条 */
+  scrollbar-width: thin;
+  scrollbar-color: var(--td-brand-color) var(--td-bg-color-container-hover);
 }
 
+/* Webkit 浏览器滚动条样式 */
 .content-scroll-area::-webkit-scrollbar {
-  display: none;
+  width: 10px;
+}
+
+.content-scroll-area::-webkit-scrollbar-track {
+  background: var(--td-bg-color-container-hover);
+  border-radius: 5px;
+}
+
+.content-scroll-area::-webkit-scrollbar-thumb {
+  background: var(--td-brand-color);
+  border-radius: 5px;
+  border: 2px solid var(--td-bg-color-container-hover);
+  transition: background 0.2s ease;
+  /* 确保滑块可见 */
+  min-height: 20px;
+}
+
+.content-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: var(--td-brand-color-focus);
+}
+
+.content-scroll-area::-webkit-scrollbar-thumb:active {
+  background: var(--td-brand-color-active);
 }
 
 /* 左右顺序布局 */

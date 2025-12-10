@@ -110,7 +110,7 @@ import {
 import { rename } from '@tauri-apps/plugin-fs';
 import { join } from '@tauri-apps/api/path';
 import { openPath } from '@tauri-apps/plugin-opener';
-import { fetch } from '@tauri-apps/plugin-http';
+// import { fetch } from '@tauri-apps/plugin-http';
 import { scanLocalMods, getPluginsDirectory, type LocalModInfo } from '../utils/modUtils';
 // 导入全局状态管理
 import { useModListStore } from '../stores/modStore';
@@ -122,11 +122,11 @@ interface UIModItem extends LocalModInfo {
   processing: boolean;
 }
 
-interface OnlineModItem {
-  englishName: string;
-  modName: string;
-  [key: string]: any;
-}
+// interface OnlineModItem {
+//   englishName: string;
+//   modName: string;
+//   [key: string]: any;
+// }
 
 const loading = ref(false);
 const batchLoading = ref(false); // 批量操作loading
